@@ -12,7 +12,7 @@ interface HeroProps {
 export default function Hero({ city, setCity }: HeroProps) {
   const [isHovering, setIsHovering] = useState(false);
   
-  const cities = ["Mumbai", "Bandra", "Delhi", "Bangalore", "Goa"];
+  const cities = ["Delhi", "Bangalore", "Mumbai"];
   
   const handleCityClick = () => {
     const currentIndex = cities.indexOf(city);

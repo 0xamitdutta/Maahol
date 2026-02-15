@@ -9,7 +9,7 @@ import NewsletterSection from '@/components/home/NewsletterSection';
 import { useState } from 'react';
 
 export default function Home() {
-  const [city, setCity] = useState("Mumbai");
+  const [city, setCity] = useState("Delhi");
 
   return (
     <main className="min-h-screen flex flex-col">
