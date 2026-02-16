@@ -17,8 +17,8 @@ const config: Config = {
         }
       },
       fontFamily: {
-        sans: ["var(--font-inter)"],
-        serif: ["var(--font-playfair)"],
+        sans: ["var(--font-inter)",],
+        serif: ["var(--font-playfair-display)"],
       },
        borderRadius: {
         'full': 'var(--radius-full)',

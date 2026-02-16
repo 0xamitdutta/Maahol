@@ -13,7 +13,7 @@ const cache = new Map<
   string,
   { data: Restaurant[]; fetchedAt: number }
 >();
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL_MS = 60 * 60 * 1000 * 24; // 24 hours 
 
 // ---------------------------------------------------------------------------
 // Map Google's priceLevel enum to rupee symbols

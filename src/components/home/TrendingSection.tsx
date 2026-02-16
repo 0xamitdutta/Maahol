@@ -40,7 +40,7 @@ export default function TrendingSection({ city = "Mumbai" }: TrendingSectionProp
   }, [city]);
 
   return (
-    <section className="py-24 px-6 md:px-16 bg-white/50">
+    <section id="trending" className="py-24 px-6 md:px-16 bg-white/50">
       <div className="container mx-auto max-w-7xl">
         <div className="flex justify-between items-end mb-12">
           <div>
