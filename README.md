@@ -4,7 +4,9 @@
 
 Maahol is a curated discovery engine that helps you find the perfect spot based on your mood, not just cuisine or location. Whether you're looking for a quiet "Work Cafe" in Bandra or a high-energy "Date Night" in Mumbai, Maahol guides you to India's best-kept secrets.
 
-![Maahol Preview](public/images/maahol.gif)
+<p align="center">
+  <img src="public/images/maahol.gif" alt="Maahol Preview" width="100%">
+</p>
 
 ## ✨ Features
 
