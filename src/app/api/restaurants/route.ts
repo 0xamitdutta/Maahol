@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Restaurant, City } from "@/types";
+import { enrichWithVibes } from "./vibes";
 
 const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
@@ -7,7 +8,7 @@ const VALID_CITIES: City[] = ["Delhi", "Bangalore", "Mumbai"];
 
 // ---------------------------------------------------------------------------
 // In-memory cache: city → { data, fetchedAt }
-// TTL = 1 hour — avoids hammering the API during development
+// TTL = 24 hours — avoids hammering the API during development
 // ---------------------------------------------------------------------------
 const cache = new Map<
   string,
@@ -144,6 +145,7 @@ function mapPlace(
     imageUrl: photos.length > 0 ? photoUrl(photos[0].name) : null,
     photos: photos.slice(0, 5).map((p) => photoUrl(p.name)),
     tags: deriveTags(place),
+    vibes: [],
     address: formattedAddress,
     openNow: currentOpeningHours?.openNow ?? null,
     lat: location?.latitude ?? 0,
@@ -246,7 +248,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const restaurants = await fetchRestaurantsForCity(city);
+    const rawRestaurants = await fetchRestaurantsForCity(city);
+    const restaurants = await enrichWithVibes(rawRestaurants);
     cache.set(city, { data: restaurants, fetchedAt: Date.now() });
     return NextResponse.json(restaurants);
   } catch (err) {

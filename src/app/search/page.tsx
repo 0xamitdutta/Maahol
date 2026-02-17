@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import VenueCard from '@/components/search/VenueCard';
-import type { Restaurant, City } from '@/types';
-import { CITIES } from '@/types';
+import type { Restaurant, City, Vibe } from '@/types';
+import { CITIES, VIBES } from '@/types';
 
 function SearchContent() {
   const searchParams = useSearchParams();
@@ -17,6 +17,8 @@ function SearchContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [selectedPrices, setSelectedPrices] = useState<Set<string>>(new Set());
+  const [selectedVibes, setSelectedVibes] = useState<Set<Vibe>>(new Set());
   const PAGE_SIZE = 20;
 
   useEffect(() => {
@@ -46,8 +48,34 @@ function SearchContent() {
     return () => { cancelled = true; };
   }, [city]);
 
-  const totalPages = Math.ceil(venues.length / PAGE_SIZE);
-  const pagedVenues = venues.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const togglePrice = (price: string) => {
+    setSelectedPrices(prev => {
+      const next = new Set(prev);
+      if (next.has(price)) next.delete(price);
+      else next.add(price);
+      return next;
+    });
+    setPage(1);
+  };
+
+  const toggleVibe = (vibe: Vibe) => {
+    setSelectedVibes(prev => {
+      const next = new Set(prev);
+      if (next.has(vibe)) next.delete(vibe);
+      else next.add(vibe);
+      return next;
+    });
+    setPage(1);
+  };
+
+  const filteredVenues = venues.filter(v => {
+    const matchesPrice = selectedPrices.size === 0 || selectedPrices.has(v.priceLevel);
+    const matchesVibe = selectedVibes.size === 0 || v.vibes?.some(vibe => selectedVibes.has(vibe));
+    return matchesPrice && matchesVibe;
+  });
+
+  const totalPages = Math.ceil(filteredVenues.length / PAGE_SIZE);
+  const pagedVenues = filteredVenues.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -62,7 +90,7 @@ function SearchContent() {
         <p className="text-gray-500">
           {loading
             ? 'Loading…'
-            : `Showing ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, venues.length)} of ${venues.length} spots in ${city}`}
+            : `Showing ${filteredVenues.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, filteredVenues.length)} of ${filteredVenues.length} spots in ${city}`}
         </p>
       </div>
 
@@ -92,10 +120,19 @@ function SearchContent() {
           <div>
             <h3 className="font-semibold mb-3">Vibe</h3>
             <div className="space-y-2">
-              {['Date Night', 'Party', 'Chill', 'Work'].map(vibe => (
-                <label key={vibe} className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 text-primary focus:ring-primary" />
-                  <span className="text-sm text-gray-600">{vibe}</span>
+              {VIBES.map(vibe => (
+                <label key={vibe} className="flex items-center space-x-2 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={selectedVibes.has(vibe)}
+                    onChange={() => toggleVibe(vibe)}
+                    className="rounded border-gray-300 text-[#d8544f] focus:ring-[#d8544f] accent-[#d8544f]"
+                  />
+                  <span className={`text-sm transition-colors ${
+                    selectedVibes.has(vibe) ? 'text-[#d8544f] font-medium' : 'text-gray-600 group-hover:text-gray-900'
+                  }`}>
+                    {vibe}
+                  </span>
                 </label>
               ))}
             </div>
@@ -105,7 +142,15 @@ function SearchContent() {
             <h3 className="font-semibold mb-3">Price</h3>
             <div className="flex gap-2">
               {['₹', '₹₹', '₹₹₹', '₹₹₹₹'].map(price => (
-                <button key={price} className="px-3 py-1 text-sm border border-gray-200 rounded-full hover:border-primary hover:text-primary transition-colors">
+                <button
+                  key={price}
+                  onClick={() => togglePrice(price)}
+                  className={`px-3 py-1 text-sm rounded-full border transition-colors ${
+                    selectedPrices.has(price)
+                      ? 'bg-[#d8544f] text-white border-[#d8544f]'
+                      : 'border-gray-200 hover:border-[#d8544f] hover:text-[#d8544f]'
+                  }`}
+                >
                   {price}
                 </button>
               ))}

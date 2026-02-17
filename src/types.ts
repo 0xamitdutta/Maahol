@@ -2,6 +2,9 @@ export type City = "Delhi" | "Bangalore" | "Mumbai";
 
 export const CITIES: City[] = ["Delhi", "Bangalore", "Mumbai"];
 
+export const VIBES = ["Date Night", "Party", "Chill", "Work"] as const;
+export type Vibe = (typeof VIBES)[number];
+
 export interface Restaurant {
   id: string; // Google Place ID
   name: string;
@@ -14,6 +17,7 @@ export interface Restaurant {
   imageUrl: string | null;
   photos: string[]; // Array of photo URLs
   tags: string[];
+  vibes: Vibe[]; // LLM-classified vibes
   address: string; // Full formatted address
   openNow: boolean | null;
   lat: number;
