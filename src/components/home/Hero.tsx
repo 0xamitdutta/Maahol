@@ -27,8 +27,8 @@ export default function Hero({ city, setCity }: HeroProps) {
       <div className="absolute top-[-20%] left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#D9534F]/5 blur-[120px]" />
 
       <div className="container relative z-10 mx-auto max-w-5xl">
-        <h1 className="mb-8 text-5xl font-serif font-bold italic text-[#1A1A1A] md:text-7xl lg:text-8xl">
-          Where is the night going?
+        <h1 className="mb-8 text-5xl font-serif font-bold italic text-[#1A1A1A] md:text-4xl lg:text-8xl">
+          Where is the vibe going?
         </h1>
 
         {/* Mad Libs Search */}

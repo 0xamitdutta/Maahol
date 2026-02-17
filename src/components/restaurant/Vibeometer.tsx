@@ -9,9 +9,9 @@ export default function Vibeometer({ ratings }: { ratings: { label: string; valu
               <span className="text-gray-600 font-medium">{stat.label}</span>
               <span className="text-gray-900 font-bold">{stat.value}/10</span>
             </div>
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-2 bg-[#f3f4f6] rounded-full overflow-hidden">
               <div 
-                className="h-full bg-primary rounded-full transition-all duration-1000"
+                className="h-full bg-[#d8544f] rounded-full transition-all duration-1000"
                 style={{ width: `${(stat.value / 10) * 100}%` }}
               />
             </div>
