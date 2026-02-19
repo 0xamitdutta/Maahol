@@ -110,7 +110,7 @@ export async function GET(
       lng: location?.longitude ?? 0,
       googleMapsUri: place.googleMapsUri ?? "",
       types: place.types ?? [],
-      reviews: reviews.slice(0, 3).map((r) => ({
+      reviews: reviews.slice(0, 5).map((r) => ({
         author: r.authorAttribution?.displayName ?? "Anonymous",
         text: r.text?.text ?? "",
         rating: r.rating ?? 0,
