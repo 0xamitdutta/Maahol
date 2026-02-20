@@ -1,6 +1,6 @@
-export type City = "Delhi" | "Bangalore" | "Mumbai";
+export type City = "Delhi" | "Bangalore" | "Mumbai" | "Pune" | "Goa";
 
-export const CITIES: City[] = ["Delhi", "Bangalore", "Mumbai"];
+export const CITIES: City[] = ["Delhi", "Bangalore", "Mumbai", "Pune", "Goa"];
 
 export const VIBES = ["Date Night", "Party", "Chill", "Work"] as const;
 export type Vibe = (typeof VIBES)[number];

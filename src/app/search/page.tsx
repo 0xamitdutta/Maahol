@@ -19,6 +19,7 @@ const NEIGHBORHOODS = ['Bandra', 'Fort', 'Colaba', 'Juhu', 'Lower Parel'];
 function SearchContent() {
   const searchParams = useSearchParams();
   const cityParam = searchParams.get('city') ?? 'Mumbai';
+  const queryParam = searchParams.get('q') ?? '';
   const city: City = CITIES.includes(cityParam as City) ? (cityParam as City) : 'Mumbai';
 
   // --- State ---
@@ -111,10 +112,17 @@ function SearchContent() {
       // Neighborhood filter is mocked for now as strict equality if venue location matches or if we assume all are in Bandra for the "Trending in Bandra" context
       // For demo purposes, we'll be loose with location matching or just rely on the API for city
       const matchesNeighborhood = selectedNeighborhood === 'All' || !selectedNeighborhood || v.location?.includes(selectedNeighborhood) || true; // Show all for now to ensure results
+      
+      const searchQ = queryParam.toLowerCase();
+      const matchesQuery = !searchQ || 
+        v.name.toLowerCase().includes(searchQ) || 
+        v.tags?.some(t => t.toLowerCase().includes(searchQ)) ||
+        v.location.toLowerCase().includes(searchQ) ||
+        v.description?.toLowerCase().includes(searchQ);
 
-      return matchesPrice && matchesVibe && matchesNeighborhood;
+      return matchesPrice && matchesVibe && matchesNeighborhood && matchesQuery;
     });
-  }, [venues, selectedPrices, selectedVibes, selectedNeighborhood]);
+  }, [venues, selectedPrices, selectedVibes, selectedNeighborhood, queryParam]);
 
   const pagedVenues = filteredVenues.slice(0, page * PAGE_SIZE);
   const totalSpots = venues.length; // Mock total for "of 142 spots"
@@ -149,7 +157,17 @@ function SearchContent() {
               </div>
               <input 
                 type="text" 
+                defaultValue={queryParam}
                 placeholder={`Italian restaurants in ${selectedNeighborhood}`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const val = e.currentTarget.value;
+                    const url = new URL(window.location.href);
+                    if (val) url.searchParams.set('q', val);
+                    else url.searchParams.delete('q');
+                    window.location.href = url.toString();
+                  }
+                }}
                 className="w-full bg-white border border-gray-200 rounded-lg py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-[#d8544f]/50 focus:ring-4 focus:ring-[#d8544f]/5 transition-all shadow-sm"
               />
             </div>
@@ -195,7 +213,7 @@ function SearchContent() {
           <div className="space-y-4">
              <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest">Vibe Spectrum</h3>
              <div className="space-y-3">
-               {['Quiet Conversation', 'High Energy', 'Industrial Chic', 'Underground'].map(vibe => (
+               {VIBES.map(vibe => (
                  <label key={vibe} className="flex items-center gap-3 cursor-pointer group">
                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${selectedVibes.has(vibe as Vibe) ? 'border-[#d8544f]' : 'border-gray-300 group-hover:border-[#d8544f]'}`}>
                       {selectedVibes.has(vibe as Vibe) && <div className="w-2.5 h-2.5 rounded-full bg-[#d8544f]" />}
@@ -282,10 +300,13 @@ function SearchContent() {
           
           {/* Header */}
           <div className="mb-8">
-            <h2 className="font-serif text-5xl mb-4 text-[#171212]">Trending in {selectedNeighborhood}</h2>
+            <h2 className="font-serif text-5xl mb-4 text-[#171212]">
+              {queryParam ? `Results for "${queryParam}"` : `Trending in ${selectedNeighborhood}`}
+            </h2>
             <p className="text-lg text-gray-600 max-w-3xl leading-relaxed">
-              Data-dense curation of the most atmospheric spots. Filtered by lighting, 
-              acoustics, and the specific soul of the neighborhood.
+              {queryParam 
+                ? `Found ${filteredVenues.length} spots matching your search, filtered by lighting, acoustics, and the specific soul of the neighborhood.`
+                : `Data-dense curation of the most atmospheric spots. Filtered by lighting, acoustics, and the specific soul of the neighborhood.`}
             </p>
           </div>
 

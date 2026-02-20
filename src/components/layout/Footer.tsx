@@ -7,8 +7,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="mb-3">
-              <img src="/images/logo.svg" alt="Maahol" className="h-10 w-auto" />
+            <div className="mb-4">
+              <img src="/images/logo.svg" alt="Maahol Logo" className="h-16 w-auto" />
             </div>
             <p className="text-sm text-[#171212]/50 leading-relaxed max-w-xs">
               An exquisite inside restaurant discovery platform with vibe-first approach.
